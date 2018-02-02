@@ -1,5 +1,15 @@
 #! /usr/bin/python
 
+#
+#	pyqrcode.py
+#
+#	George Viaud
+#	Modified for the CrypTile open-source hardware project 
+#	Details can be found in the readme and at https://CrypTile.us/
+#
+#	This is mildly altered fork of QR-Code-SVG-Logo-Generator by David Janes
+#
+
 import pyqrcode
 from lxml import etree
 import math
@@ -8,7 +18,8 @@ import logging
 logging.basicConfig(level=logging.DEBUG if __debug__ else logging.INFO)
 
 block_size = 10
-circle_radius = block_size * 4
+offset = block_size / 2
+circle_radius = block_size * 2
 
 def distance(p0, p1):
     return math.sqrt((p0[0] - p1[0])**2 + (p0[1] - p1[1])**2)
@@ -39,9 +50,17 @@ def touchesBounds(center, x, y, radius, block_size):
 if len(sys.argv) < 4:
     print "Incorrect args, try:"
     print './generate.py ./octocat.svg "http://github.com" ./out.svg'
+    print "or"
+    print './generate.py --nologo "http://github.com" ./out.svg'
+	
     sys.exit(0)
 
-logoPath = sys.argv[1]
+if str(sys.argv[1]) == '--nologo':
+	circle_radius = 0
+	logoPath = 0
+else:
+	logoPath = sys.argv[1]
+	
 url = sys.argv[2]
 outputname = sys.argv[3]
 
@@ -65,17 +84,17 @@ rEyeColor = 'black'
 rWhiteColor = 'white'
 rPupilcolor = 'black'
 
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rEye), fill=rEyeColor)
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rWhite), fill=rWhiteColor)
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rPupil), fill=rPupilcolor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str(3*block_size + offset), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str(3*block_size + offset), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str(3*block_size + offset), r=str(rPupil), fill=rPupilcolor)
 
-etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rEye), fill=rEyeColor)
-etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rWhite), fill=rWhiteColor)
-etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rPupil), fill=rPupilcolor)
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size + offset), cy=str(3*block_size + offset), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size + offset), cy=str(3*block_size + offset), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size + offset), cy=str(3*block_size + offset), r=str(rPupil), fill=rPupilcolor)
 
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rEye), fill=rEyeColor)
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rWhite), fill=rWhiteColor)
-etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rPupil), fill=rPupilcolor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str((im.size[1]-4)*block_size + offset), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str((im.size[1]-4)*block_size + offset), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size + offset), cy=str((im.size[1]-4)*block_size + offset), r=str(rPupil), fill=rPupilcolor)
 
 for xPos in range(0,im.size[0]):
     for yPos in range(0, im.size[1]):
@@ -89,38 +108,37 @@ for xPos in range(0,im.size[0]):
             withinBounds = withinBounds and not (xPos > (im.size[0] - 8) and yPos < 7)
 			
             if (withinBounds):
-                etree.SubElement(doc, 'circle', cx=str(xPos*block_size), cy=str(yPos*block_size), r='4', fill='black')
+                etree.SubElement(doc, 'circle', cx=str(xPos*block_size + offset), cy=str(yPos*block_size + offset), r='4', fill='black')
 			
+if logoPath:
+	logo = getSVGFileContent(logoPath)
+	test = str(logo.get("viewBox"))
+	Array = []
 
-logo = getSVGFileContent(logoPath)
+	if (test != "None"):
+		Array = test.split(" ")
+		width = float(Array[2])
+		height = float(Array[3])
+	else :
+		width = float(str(logo.get("width")).replace("px", ""))
+		height = float(str(logo.get("height")).replace("px", ""))
 
-test = str(logo.get("viewBox"))
-Array = []
+	dim = height
+	if (width > dim):
+		dim = width
+	scale = circle_radius * 2.0 / width
 
-if (test != "None"):
-    Array = test.split(" ")
-    width = float(Array[2])
-    height = float(Array[3])
-else :
-    width = float(str(logo.get("width")).replace("px", ""))
-    height = float(str(logo.get("height")).replace("px", ""))
+	scale_str = "scale(" + str(scale) + ")"
 
-dim = height
-if (width > dim):
-    dim = width
-scale = circle_radius * 2.0 / width
+	xTrans = ((im.size[0] * block_size) - (width * scale)) / 2.0
+	yTrans = ((im.size[1] * block_size) - (height * scale)) / 2.0
 
-scale_str = "scale(" + str(scale) + ")"
+	translate = "translate(" + str(xTrans) + " " + str(yTrans) + ")"
 
-xTrans = ((im.size[0] * block_size) - (width * scale)) / 2.0
-yTrans = ((im.size[1] * block_size) - (height * scale)) / 2.0
+	logo_scale_container = etree.SubElement(doc, 'g', transform=translate + " " + scale_str)
 
-translate = "translate(" + str(xTrans) + " " + str(yTrans) + ")"
-
-logo_scale_container = etree.SubElement(doc, 'g', transform=translate + " " + scale_str)
-
-for element in logo.getchildren():
-    logo_scale_container.append(element)
+	for element in logo.getchildren():
+		logo_scale_container.append(element)
 
 
 # ElementTree 1.2 doesn't write the SVG file header errata, so do that manually
