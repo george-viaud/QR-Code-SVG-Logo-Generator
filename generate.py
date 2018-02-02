@@ -25,7 +25,7 @@ def distance(p0, p1):
     return math.sqrt((p0[0] - p1[0])**2 + (p0[1] - p1[1])**2)
 
 def generateQRImageForUrl(url):
-    qr_image = pyqrcode.MakeQRImage(url, errorCorrectLevel = pyqrcode.QRErrorCorrectLevel.H, block_in_pixels = 1, border_in_blocks=0)
+    qr_image = pyqrcode.MakeQRImage(url, errorCorrectLevel = pyqrcode.QRErrorCorrectLevel.L, block_in_pixels = 1, border_in_blocks=0)
     return qr_image
 
 def getSVGFileContent(filename):
