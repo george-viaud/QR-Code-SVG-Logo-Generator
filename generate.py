@@ -56,6 +56,27 @@ pix = im.load()
 
 center = im.size[0] * block_size / 2
 
+
+rEye = 34.1
+rWhite = 26
+rPupil = 14
+
+rEyeColor = 'black'
+rWhiteColor = 'white'
+rPupilcolor = 'black'
+
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str(3*block_size), r=str(rPupil), fill=rPupilcolor)
+
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str((im.size[0]-4)*block_size), cy=str(3*block_size), r=str(rPupil), fill=rPupilcolor)
+
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rEye), fill=rEyeColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rWhite), fill=rWhiteColor)
+etree.SubElement(doc, 'circle', cx=str(3*block_size), cy=str((im.size[1]-4)*block_size), r=str(rPupil), fill=rPupilcolor)
+
 for xPos in range(0,im.size[0]):
     for yPos in range(0, im.size[1]):
 
@@ -63,9 +84,13 @@ for xPos in range(0,im.size[0]):
         if color == (0,0,0,255):
 
             withinBounds = not touchesBounds(center, xPos, yPos, circle_radius, block_size)
-
+            withinBounds = withinBounds and not (xPos < 7 and yPos < 7)
+            withinBounds = withinBounds and not (xPos < 7 and yPos > (im.size[1] - 8))
+            withinBounds = withinBounds and not (xPos > (im.size[0] - 8) and yPos < 7)
+			
             if (withinBounds):
-                etree.SubElement(doc, 'rect', x=str(xPos*block_size), y=str(yPos*block_size), width='10', height='10', fill='black')
+                etree.SubElement(doc, 'circle', cx=str(xPos*block_size), cy=str(yPos*block_size), r='4', fill='black')
+			
 
 logo = getSVGFileContent(logoPath)
 
