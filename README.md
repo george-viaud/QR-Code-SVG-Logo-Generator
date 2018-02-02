@@ -11,7 +11,7 @@ Simply pass the svg file containing the logo, the url you want on the QR code, a
 Since the addition of a logo reduces redundancy, you may wish to produce tiles without a logo, depending on your threat model.
 
 ```
-./generate.py ./coin-logos/NANO.svg "correct horse battery staple pacifist convolve pinch amputate upstream potsherd baryta nod" ./your_seed.svg
+./generate.py ./coin-logos/BTC.svg "correct horse battery staple pacifist convolve pinch amputate upstream potsherd baryta nod" ./your_seed.svg
 ```
 or
 ```
