@@ -2,7 +2,7 @@ QR Code SVG Generator for CrypTile
 ==================================
 Generate etch-ready logos for the CrypTile project!
 
-![Example Code](http://github.com/george-viaud/QR-Code-SVG-Logo-Generator/sample.png)
+![Example Code](https://github.com/george-viaud/QR-Code-SVG-Logo-Generator/raw/gh-pages/sample.png)
 
 Logo should be a svg file, the output QR code is also an SVG
 
